@@ -1,0 +1,50 @@
+/* Predictable element sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default page spacing */
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+/* Control text spacing yourself */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+/* Make form controls use the page font */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Keep images within their containers */
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Remove list decoration only from navigation */
+nav ul,
+nav ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
