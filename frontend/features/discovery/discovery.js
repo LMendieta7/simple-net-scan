@@ -40,7 +40,31 @@ export function renderDiscovery(container) {
             </div>
         </form>
         
-        
+        <div class="device-table card">
+            <h2>Discovered devices</h2>
+            <div class="device-field">
+                <table>
+                    <thead class="table-header">
+                        <tr>
+                            <th scope="col">IP address</th>
+                            <th scope="col">Hostname</th>
+                            <th scope="col">MAC address</th>
+                            <th scope="col">Web service</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>192.168.0.1</td>
+                            <td>ff:ff:ff:ff:ff</td>
+                        </tr>
+                        <tr>
+                            <td>Row 2, Cell 1</td>
+                            <td>Row 2, Cell 2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </section>
   `;
 }

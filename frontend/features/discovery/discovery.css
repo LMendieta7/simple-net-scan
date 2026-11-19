@@ -15,6 +15,20 @@ that share the available width after accounting for the gaps. */
   gap: 24px;
 }
 
+.device-field {
+  overflow-x: auto;
+}
+
+.device-field table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.device-field td {
+  padding: 8px 12px;
+}
+
 .form-field {
   display: flex;
   flex-direction: column;
@@ -32,6 +46,26 @@ that share the available width after accounting for the gaps. */
 .discovery-form {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.device-field .table-header th {
+  background: lightgray;
+  padding: 6px 12px;
+}
+
+.table-header th:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.table-header th:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.device-table {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
   gap: 20px;
 }
 
