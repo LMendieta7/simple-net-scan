@@ -6,65 +6,81 @@ export function renderDiscovery(container) {
             <p>Find responding devices on your local network.</p>
         </header>
         
-        <form class="discovery-form card">
+        <div class="discovery-form card">
             <h2>Discovery settings</h2>
             <div class="discovery-fields">
-                <div class="form-field">
-                    <label for="network-interface">Network interface</label>
-                    <select id="network-interface" name="network-interface">
-                        <option value="" selected>Select an interface</option>
-                        <option value="en0">WiFi - 192.168.0.25</option>
-                        <option value="en7">Ethernet - 192.168.1.100</option>
-                    </select>
-                    <small id="network-interface-help">Ethernet or WiFi</small>
-                </div>
+
                 <div class="form-field">
                     <label for="ip-range">IP range</label>
-                    <input type="text" id="ip-range" name="ip-range" placeholder="192.168.1.1 - 192.168.1.50"/>
+                    <input type="text" id="ip-range" name="ip-range" placeholder="192.168.1.1, 192.168.1.50-100, 192.168.1.0/24"/>
                 </div>
 
                 <div class="form-field">
                     <label for="discovery-method">Discovery method</label>
                     <select id="discovery-method" name="discovery-method">
-                        <option value="" selected>Select method</option>
-                        <option value="auto">Automatic (Nmap default)</option>
+                        <option value="">Select method</option>
+                        <option selected value="auto">Automatic (Nmap default)</option>
                         <option value="arp">ARP discovery</option>
-                        <option value="icmp">ICMP ping</option>
-                        <option value="tcp">TCP discovery</option>
                     </select>
                 </div>
             </div>
             <div class="form-button">           
-                <button class="start-button" type="submit"><i class="fa-solid fa-play"></i>Start discovery</button>
-                <button class="stop-button" type="button"><i class="fa-solid fa-stop"></i>Stop</button>
+                <button id="test-discovery-button" class="start-button" type="submit"><i class="fa-solid fa-play"></i>Discover Devices</button>
+                <button class="stop-button" type="button" disabled><i class="fa-solid fa-stop"></i>Stop</button>
             </div>
-        </form>
+        </div>
         
         <div class="device-table card">
             <h2>Discovered devices</h2>
-            <div class="device-field">
+            <div class="device-field" id="device-field">
                 <table>
                     <thead class="table-header">
                         <tr>
                             <th scope="col">IP address</th>
-                            <th scope="col">Hostname</th>
                             <th scope="col">MAC address</th>
-                            <th scope="col">Web service</th>
+                            <th scope="col">Vendor</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>192.168.0.1</td>
-                            <td>ff:ff:ff:ff:ff</td>
-                        </tr>
-                        <tr>
-                            <td>Row 2, Cell 1</td>
-                            <td>Row 2, Cell 2</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="device-rows"></tbody>
                 </table>
             </div>
+            <p id="discovery-summary" role="status"></p>
         </div>
     </section>
   `;
+
+    const testButton = container.querySelector("#test-discovery-button");
+    const rows = container.querySelector("#device-rows");
+    const summary = container.querySelector("#discovery-summary");
+
+    testButton.addEventListener("click", async () => {
+        if (testButton.disabled) return;
+
+        testButton.disabled = true;
+        summary.textContent = "Discovering devices…";
+
+        try {
+            const response = await fetch("/discovery", { cache: "no-store" });
+            if (!response.ok) {
+                throw new Error(`Discovery failed (HTTP ${response.status}).`);
+            }
+
+            const { devices, summary: scanSummary } = await response.json();
+            rows.replaceChildren();
+
+            for (const device of devices) {
+                const row = rows.insertRow();
+                for (const value of [device.ip, device.mac, device.vendor]) {
+                    row.insertCell().textContent = value ?? "—";
+                }
+            }
+
+            summary.textContent = scanSummary ||
+                `${devices.length} devices found.`;
+        } catch (error) {
+            summary.textContent = error.message;
+        } finally {
+            testButton.disabled = false;
+        }
+    });
 }
